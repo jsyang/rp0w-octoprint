@@ -1,0 +1,9 @@
+---
+- hosts: rp0w
+  vars:
+    allow_world_readable_tmpfiles: true
+  tasks:
+    - name: Shutdown
+      command: shutdown now
+      become: yes
+

@@ -1,0 +1,24 @@
+---
+- hosts: rp0w
+  vars:
+    allow_world_readable_tmpfiles: true
+  tasks:
+    - name: Turn on camera lights
+      command: chdir=~/printlights node setLights.js 100
+
+    - name: Start mjpeg-streamer
+      become_user: webcam
+      become_method: sudo
+      become_flags: '-i'
+      become: yes
+      shell: cd ~/mjpg-streamer/mjpg-streamer-experimental; nohup ./mjpg_streamer -i "./input_raspicam.so -fps 15 -x 1280 -y 720 -q 10" -o "./output_http.so -n -w ./www" </dev/null >/dev/null 2>&1 &
+
+    - name: Start OctoPrint
+      become_user: octoprint
+      become_method: sudo
+      become: yes
+      become_flags: '-i'
+      environment:
+        PATH: '/home/octoprint/.pyenv/plugins/pyenv-virtualenv/shims:/home/octoprint/.pyenv/shims:~/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games'
+      shell: cd ~/stable; ./run serve --basedir /home/octoprint/.octoprint/stable </dev/null >/dev/null 2>&1 &
+

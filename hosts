@@ -1,0 +1,6 @@
+all:
+  hosts:
+    rp0w:
+      ansible_host: octoprint
+      ansible_user: pi
+      ansible_ssh_pass: YOUR_SECURE_PASSWORD_HERE
